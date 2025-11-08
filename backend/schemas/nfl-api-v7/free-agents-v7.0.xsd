@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:fa="http://feed.elasticstats.com/schema/football/nfl/free-agents-v7.0.xsd"
+           targetNamespace="http://feed.elasticstats.com/schema/football/nfl/free-agents-v7.0.xsd"
+           elementFormDefault="qualified">
+
+  <xs:include schemaLocation="../common-v7.0.xsd"/>
+
+  <xs:complexType name="freeAgentType">
+    <xs:attributeGroup ref="fa:extPlayerAttributes"/>
+    <xs:attribute name="updated"    use="optional" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:element name="league">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="free_agent" type="fa:freeAgentType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="fa:baseOrganizationAttributes"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
