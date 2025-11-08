@@ -63,47 +63,54 @@ async def test_query(query: str, show_gemini_only: bool = False):
         selected_route = None
         endpoint = None
         params = {}
+        function_name = ""  # Initialize
+        parsed = {}  # Initialize
         
         try:
-            # Try to parse function call format: get_player_info({"player_name": "patrick mahomes"})
-            # Matches function_name({...}) where function_name can have underscores
-            function_call_match = re.search(r'([a-z_]+)\s*\((\{.*?\})\)', gemini_text, re.DOTALL | re.IGNORECASE)
-            if function_call_match:
-                function_name = function_call_match.group(1)
-                params_json = function_call_match.group(2)
+            # First, try to extract JSON from markdown code blocks (most common format)
+            json_match = re.search(r'```(?:json)?\s*(\{[\s\S]*?\})\s*```', gemini_text)
+            if json_match:
+                json_text = json_match.group(1)
                 try:
-                    params = json.loads(params_json)
-                except json.JSONDecodeError:
-                    params = {}
-            else:
-                # Try to parse format without parentheses: get_all_teams{} or get_all_teams
-                simple_function_match = re.search(r'([a-z_]+)\s*(\{.*?\})?', gemini_text, re.IGNORECASE)
-                if simple_function_match:
-                    function_name = simple_function_match.group(1)
-                    params_json = simple_function_match.group(2)
-                    if params_json:
-                        try:
-                            params = json.loads(params_json)
-                        except json.JSONDecodeError:
-                            params = {}
-                    else:
-                        params = {}
-                else:
-                    # Extract JSON from markdown code blocks if present
-                    json_text = gemini_text
-                    json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', json_text, re.DOTALL)
-                    if json_match:
-                        json_text = json_match.group(1)
-                    else:
-                        # Try to find JSON object in the text
-                        json_match = re.search(r'\{.*\}', json_text, re.DOTALL)
-                        if json_match:
-                            json_text = json_match.group(0)
-                    
-                    # Parse the JSON
                     parsed = json.loads(json_text)
                     function_name = parsed.get("function_name", "")
                     params = parsed.get("parameters", {})
+                except json.JSONDecodeError:
+                    parsed = {}
+            else:
+                # Try to parse function call format: get_player_info({"player_name": "patrick mahomes"})
+                function_call_match = re.search(r'([a-z_]+)\s*\((\{.*?\})\)', gemini_text, re.DOTALL | re.IGNORECASE)
+                if function_call_match:
+                    function_name = function_call_match.group(1)
+                    params_json = function_call_match.group(2)
+                    try:
+                        params = json.loads(params_json)
+                    except json.JSONDecodeError:
+                        params = {}
+                else:
+                    # Try to parse format without parentheses: get_all_teams{} or get_all_teams
+                    simple_function_match = re.search(r'([a-z_]+)\s*(\{.*?\})?', gemini_text, re.IGNORECASE)
+                    if simple_function_match:
+                        function_name = simple_function_match.group(1)
+                        params_json = simple_function_match.group(2)
+                        if params_json:
+                            try:
+                                params = json.loads(params_json)
+                            except json.JSONDecodeError:
+                                params = {}
+                        else:
+                            params = {}
+                    else:
+                        # Try to find JSON object in the text (fallback)
+                        json_match = re.search(r'\{[\s\S]*?\}', gemini_text)
+                        if json_match:
+                            json_text = json_match.group(0)
+                            try:
+                                parsed = json.loads(json_text)
+                                function_name = parsed.get("function_name", "")
+                                params = parsed.get("parameters", {})
+                            except json.JSONDecodeError:
+                                parsed = {}
             
             # Determine route and build endpoint
             if not function_name:
