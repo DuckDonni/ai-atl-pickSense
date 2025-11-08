@@ -2,8 +2,9 @@ import google.generativeai as genai
 import requests
 import json
 import re
+from config import GEMINI_API_KEY
 
-genai.configure(api_key="AIzaSyBEMwJNKQrZbkpvGGKL-4wng0qDO_dAsQU")
+genai.configure(api_key=GEMINI_API_KEY)
 
 FUNCTIONS = {
     # "get_all_teams": {

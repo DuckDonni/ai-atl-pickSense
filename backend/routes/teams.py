@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 import requests
+from config import SPORTRADAR_API_KEY, SPORTRADAR_BASE_URL
 
 router = APIRouter()
-API_KEY = "ofT8UtZNFrpPsYJtOcsAQJYy22T2lL4qTc9ccC89"
-BASE_URL = "https://api.sportradar.com/nfl/official/trial/v7/en"
+API_KEY = SPORTRADAR_API_KEY
+BASE_URL = SPORTRADAR_BASE_URL
 
 def get_all_teams():
     """

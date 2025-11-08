@@ -3,8 +3,9 @@ Helper script to list available Gemini models.
 Run this if you need to see what models are available.
 """
 import google.generativeai as genai
+from config import GEMINI_API_KEY
 
-genai.configure(api_key="AIzaSyBEMwJNKQrZbkpvGGKL-4wng0qDO_dAsQU")
+genai.configure(api_key=GEMINI_API_KEY)
 
 print("Available Gemini models:")
 print("=" * 60)

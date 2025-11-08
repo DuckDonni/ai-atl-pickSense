@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query
 import requests
 from routes.teams import get_all_teams
+from config import SPORTRADAR_API_KEY, SPORTRADAR_BASE_URL
 
 """
 NFL API v7 - Player information using Player Profile and Team Roster feeds.
@@ -10,8 +11,8 @@ Based on API map:
 """
 
 router = APIRouter()
-API_KEY = "ofT8UtZNFrpPsYJtOcsAQJYy22T2lL4qTc9ccC89"
-BASE_URL = "https://api.sportradar.com/nfl/official/trial/v7/en"
+API_KEY = SPORTRADAR_API_KEY
+BASE_URL = SPORTRADAR_BASE_URL
 
 def search_player_in_roster(team_id, player_name):
     """

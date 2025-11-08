@@ -13,7 +13,8 @@ import google.generativeai as genai
 import requests
 
 # Configure Gemini (same as router.py)
-genai.configure(api_key="AIzaSyBEMwJNKQrZbkpvGGKL-4wng0qDO_dAsQU")
+from config import GEMINI_API_KEY
+genai.configure(api_key=GEMINI_API_KEY)
 
 FUNCTIONS = {
     "get_all_team_names": {

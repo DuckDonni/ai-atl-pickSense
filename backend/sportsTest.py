@@ -1,9 +1,10 @@
 import requests
 import pandas as pd
 from datetime import datetime, timezone
+from config import SPORTRADAR_API_KEY, SPORTRADAR_BASE_URL
 
-API_KEY = "ofT8UtZNFrpPsYJtOcsAQJYy22T2lL4qTc9ccC89"
-BASE_URL = "https://api.sportradar.com/nfl/official/trial/v7/en"
+API_KEY = SPORTRADAR_API_KEY
+BASE_URL = SPORTRADAR_BASE_URL
 
 def get_upcoming_games(season_year=2025, season_type="REG", limit=10):
     url = f"{BASE_URL}/games/{season_year}/{season_type}/schedule.json?api_key={API_KEY}"
